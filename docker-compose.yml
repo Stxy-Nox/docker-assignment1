@@ -14,4 +14,9 @@ services:
     image: redis:alpine
     container_name: redis
 
-  
+  mongodb:
+    container_name: mongoDB 
+    image: mongo:8.0-rc
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin 
+      - MONGO_INITDB_ROOT_PASSWORD=password #Should be same with .env 
