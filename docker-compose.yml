@@ -5,3 +5,13 @@ services:
     container_name: movies-api
     ports:
       - '9000:9000'
+    environment:
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017
+      - REDIS_URI=redis://redis
+      - ENABLE_WRITING_HANDLERS=false 
+
+  redis: #The Redis image does not require variables.
+    image: redis:alpine
+    container_name: redis
+
+  
