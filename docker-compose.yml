@@ -9,6 +9,8 @@ services:
       - MONGODB_URI=mongodb://admin:password@mongodb:27017
       - REDIS_URI=redis://redis
       - ENABLE_WRITING_HANDLERS=false 
+    depends_on:
+      - mongodb
 
   redis: #The Redis image does not require variables.
     image: redis:alpine
@@ -19,4 +21,17 @@ services:
     image: mongo:8.0-rc
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin 
-      - MONGO_INITDB_ROOT_PASSWORD=password #Should be same with .env 
+      - MONGO_INITDB_ROOT_PASSWORD=password #Should be same with .env's configuration
+
+  mongo-express:
+    container_name: express
+    image: mongo-express:1.0-20-alpine3.19
+    restart: always
+    ports:
+      - 8080:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password #Same as MONGO_INITDB_ROOT_PASSWORD
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    depends_on:
+      - mongodb
