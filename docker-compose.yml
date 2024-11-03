@@ -1,9 +1,14 @@
 version: '3'
 
 networks:
-  profile-network:
-    name: profile-network
-    external: false
+  api-network: #connect api and redis
+    driver: bridge
+  mongo-network: #connnect api and mongodb
+    driver: bridge
+  express-network: #connnet mongoDB and mongo express
+    driver: bridge
+
+  
 
 services:
 
@@ -13,19 +18,20 @@ services:
     ports:
       - '9000:9000'
     environment:
-      - MONGODB_URI=mongodb://admin:password@mongodb:27017
+      - MONGODB_URI=mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb:27017
       - REDIS_URI=redis://redis
       - ENABLE_WRITING_HANDLERS=false 
     depends_on:
       - mongodb
     networks:
-      - profile-network      
+      - api-network      
+      - mongo-network
 
   redis: #The Redis image does not require variables.
     image: redis:alpine
     container_name: redis
     networks:
-      - profile-network
+      - api-network  
 
   mongodb:
     container_name: mongoDB 
@@ -33,8 +39,11 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+    volumes:
+      - moviesdata:/data/db
     networks:
-      - profile-network
+      - mongo-network
+      - express-network
     
 
   mongo-express:
@@ -48,9 +57,12 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGODB_PASSWORD}
       - ME_CONFIG_MONGODB_SERVER=mongodb
     networks:
-      - profile-network
+      - express-network
     depends_on:
       - mongodb
+
+volumes:
+  moviesdata:
 
 # I discovered a strange issue where the username and password set in the yml file for mongo-express do not work, 
 # and I can only use the default 'admin' and 'pass'. 
