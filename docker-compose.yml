@@ -49,6 +49,8 @@ services:
     image: mongo_seeder
     depends_on:
       - mongodb
+    networks:
+      - mongo-network
 
   mongo-express:
     container_name: express
