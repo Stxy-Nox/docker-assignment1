@@ -39,8 +39,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
-    volumes:
-      - moviesdata:/data/db
     networks:
       - mongo-network
       - express-network
@@ -51,6 +49,8 @@ services:
       - mongodb
     networks:
       - mongo-network
+    profiles:
+      - dev #put it into dev enviroment
 
   mongo-express:
     container_name: express
@@ -66,7 +66,8 @@ services:
       - express-network
     depends_on:
       - mongodb
+    profiles:
+      - dev #put it into dev enviroment
 
-volumes:
-  moviesdata:
+
 
