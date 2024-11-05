@@ -44,7 +44,11 @@ services:
     networks:
       - mongo-network
       - express-network
-    
+
+  seeder:
+    image: mongo_seeder
+    depends_on:
+      - mongodb
 
   mongo-express:
     container_name: express
